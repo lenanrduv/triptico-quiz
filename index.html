@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>¿Qué planta soy?</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#F4F1E8;color:#1B3D2F;padding:18px}
+.card{max-width:720px;margin:18px auto;padding:18px;background:#fff;border-radius:8px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+h1{margin:0 0 8px;font-size:24px}
+.q{margin:14px 0}
+.btn{background:#2C5F2D;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+.result{font-weight:700;margin-top:12px}
+.small{font-size:14px;color:#555}
+label{margin-left:6px}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>¿Qué planta soy?</h1>
+<p class="small">Responde 5 preguntas rápidas y descubre si eres más parecido a la hierbabuena o al romero. Al final: mensaje divertido.</p>
+
+<div id="quiz"></div>
+<button id="submit" class="btn">Enviar respuestas</button>
+<div id="out" class="result"></div>
+</div>
+
+<script>
+const q = [
+{q:"¿Qué compuesto aromático predomina en mí?", a:["Mentol","Ácido rosmarínico","Borneol"], k:0},
+{q:"¿Soy más usado en cocina o en cosmética?", a:["Cocina","Cosmética","Ambos"], k:2},
+{q:"¿Qué olor describe mejor?", a:["Fresco, mentolado","Herbal, resinosa","Dulce"], k:0},
+{q:"¿A cuál planta pertenece el carnosol?", a:["Hierbabuena","Romero","Ninguna"], k:1},
+{q:"¿Cuánto dura la maceración en el proyecto?", a:["7 días","17 días","30 días"], k:1}
+];
+
+const quizDiv=document.getElementById('quiz');
+q.forEach((item,i)=>{
+  const div=document.createElement('div'); div.className='q';
+  const p=document.createElement('p'); p.textContent=(i+1)+'. '+item.q; div.appendChild(p);
+  item.a.forEach((opt,j)=>{
+    const id='q'+i+'_'+j;
+    const inp=document.createElement('input'); inp.type='radio'; inp.name='q'+i; inp.id=id; inp.value=j;
+    const lab=document.createElement('label'); lab.htmlFor=id; lab.textContent=item.a[j];
+    div.appendChild(inp); div.appendChild(lab); div.appendChild(document.createElement('br'));
+  });
+  quizDiv.appendChild(div);
+});
+
+document.getElementById('submit').onclick = function(){
+  let score=0, answered=true;
+  for(let i=0;i<q.length;i++){
+    const els=document.getElementsByName('q'+i);
+    let sel=-1;
+    for(const e of els) if(e.checked) sel=parseInt(e.value);
+    if(sel===-1){ answered=false; break; }
+    if(sel===q[i].k) score++;
+  }
+  const out=document.getElementById('out');
+  if(!answered){ out.textContent='Por favor, responde todas las preguntas.'; out.style.color='#b33'; return; }
+  let plant = score>=3 ? 'Hierbabuena (mentolada)':'Romero (herbal)';
+  out.style.color='#1B3D2F';
+  out.innerHTML = `Puntaje: ${score}/5 — Eres: <strong>${plant}</strong><br>¡Felicidades! Eres tan aromático como el mentol 😎🌿`;
+};
+</script>
+</body></html>
